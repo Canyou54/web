@@ -1,0 +1,3010 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أتمتة المهام اليومية باستخدام n8n - خطة البحث</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #2ecc71;
+            --light: #ecf0f1;
+            --dark: #1a252f;
+            --warning: #e74c3c;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --n8n-color: #13c9ca;
+            --openai: #10a37f;
+            --ai-agent: #8e44ad;
+            --github: #333;
+            --slack: #4a154b;
+            --notion: #000;
+            --postgres: #336791;
+            --mongodb: #47a248;
+            --redis: #d82c20;
+            --docker: #2496ed;
+            --whatsapp: #25D366;
+            --twitter: #1DA1F2;
+            --linkedin: #0077b5;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: var(--dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+            text-align: right;
+        }
+        
+        .container {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            padding: 40px 20px;
+            background: white;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .container.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        .slide-title {
+            color: var(--primary);
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(to left, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .slide-subtitle {
+            color: var(--secondary);
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .slide-number {
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .content {
+            margin-top: 20px;
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin: 25px 0 15px;
+            font-size: 1.8rem;
+            border-right: 5px solid var(--accent);
+            padding-right: 15px;
+            padding-left: 0;
+        }
+        
+        h3 {
+            color: var(--secondary);
+            margin: 20px 0 10px;
+            font-size: 1.4rem;
+        }
+        
+        p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            color: #555;
+        }
+        
+        ul, ol {
+            margin-right: 30px;
+            margin-left: 0;
+            margin-bottom: 25px;
+        }
+        
+        li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+            padding-right: 10px;
+            padding-left: 0;
+            position: relative;
+        }
+        
+        li:before {
+            content: "•";
+            color: var(--accent);
+            font-weight: bold;
+            margin-left: 10px;
+            margin-right: 0;
+            position: absolute;
+            right: -15px;
+            left: auto;
+        }
+        
+        .card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-right: 4px solid var(--secondary);
+            border-left: none;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .card-title i {
+            color: var(--accent);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 40px 0;
+            gap: 20px;
+        }
+        
+        .stat {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            min-width: 180px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+            padding: 18px;
+            text-align: right;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 15px 18px;
+            border-bottom: 1px solid #eee;
+            text-align: right;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .highlight {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 30px 0;
+            border-right: 4px solid var(--accent);
+            border-left: none;
+        }
+        
+        .researcher-info {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .researcher-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .research-purpose {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+        
+        .degree-badge {
+            display: inline-block;
+            background: gold;
+            color: var(--primary);
+            padding: 8px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            right: auto;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+        
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.4rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+        }
+        
+        .nav-dots {
+            position: fixed;
+            bottom: 40px;
+            right: 50%;
+            left: auto;
+            transform: translateX(50%);
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+        }
+        
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .dot.active {
+            background: white;
+            transform: scale(1.3);
+        }
+        
+        .logo {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            left: auto;
+            color: white;
+            font-weight: 700;
+            font-size: 1.3rem;
+            z-index: 100;
+        }
+        
+        .logo i {
+            margin-left: 10px;
+            margin-right: 0;
+            color: var(--accent);
+        }
+        
+        .tag {
+            display: inline-block;
+            background: #e0f7fa;
+            color: #006064;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-left: 8px;
+            margin-right: 0;
+            margin-bottom: 8px;
+        }
+        
+        .kpi {
+            display: inline-flex;
+            align-items: center;
+            background: #e8f5e9;
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 8px;
+            font-weight: 500;
+        }
+        
+        .kpi i {
+            color: var(--accent);
+            margin-left: 10px;
+            margin-right: 0;
+        }
+        
+        .challenge-solution {
+            display: flex;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+        
+        .challenge {
+            flex: 1;
+            background: #ffebee;
+            padding: 20px;
+            border-left: 1px solid #ffcdd2;
+            border-right: none;
+        }
+        
+        .solution {
+            flex: 1;
+            background: #e8f5e9;
+            padding: 20px;
+        }
+        
+        .timeline-bar {
+            height: 12px;
+            background: #eee;
+            border-radius: 6px;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .timeline-phase {
+            height: 100%;
+            border-radius: 6px;
+            position: absolute;
+            top: 0;
+        }
+        
+        .phase-label {
+            position: absolute;
+            top: 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+        
+        .project-demo {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            border-right: 5px solid var(--n8n-color);
+            border-left: none;
+        }
+        
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+        }
+        
+        .project-title {
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .project-badge {
+            background: var(--n8n-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        /* Slide 14 Styles - Interactive Simulation */
+        .workflow-simulator {
+            background: linear-gradient(135deg, #1a252f, #2c3e50);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 2px solid var(--n8n-color);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .workflow-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(19, 201, 202, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-right: 4px solid var(--n8n-color);
+            border-left: none;
+            color: white;
+        }
+        
+        .workflow-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .workflow-title i {
+            color: var(--n8n-color);
+        }
+        
+        .workflow-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #00ff9d;
+            font-weight: 600;
+        }
+        
+        .workflow-canvas {
+            min-height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .node-line {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .n8n-node {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 160px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            position: relative;
+            border: 2px solid transparent;
+            transition: all 0.4s ease;
+            z-index: 2;
+            cursor: pointer;
+        }
+        
+        .n8n-node:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+            z-index: 10;
+        }
+        
+        .node-icon {
+            font-size: 2.8rem;
+            height: 70px;
+            width: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+        
+        .node-name {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .node-description {
+            color: #bdc3c7;
+            font-size: 0.9rem;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 12px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+        
+        .connection-line {
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--n8n-color));
+            flex-grow: 1;
+            max-width: 60px;
+            position: relative;
+            margin: 0 5px;
+        }
+        
+        .connection-line::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 0;
+            left: auto;
+            width: 15px;
+            height: 15px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+        
+        .connection-line::after {
+            content: '←';
+            position: absolute;
+            top: -15px;
+            right: -5px;
+            left: auto;
+            color: var(--accent);
+            font-size: 1.4rem;
+        }
+        
+        .workflow-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .stat-item {
+            text-align: center;
+            color: white;
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .data-flow {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: dataFlow 3s infinite linear;
+            z-index: 1;
+        }
+        
+        @keyframes dataFlow {
+            0% { transform: translateX(-100px); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(100px); opacity: 0; }
+        }
+        
+        .tools-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .tool-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+        
+        .tool-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            height: 60px;
+            width: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+        
+        .tool-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .tool-description {
+            color: #666;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .system-overview {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.05), rgba(52, 152, 219, 0.05));
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            border-right: 5px solid var(--n8n-color);
+            border-left: none;
+        }
+        
+        .integration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .integration-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border-right: 4px solid var(--n8n-color);
+            border-left: none;
+        }
+        
+        .integration-icon {
+            font-size: 2rem;
+            color: var(--n8n-color);
+            margin-bottom: 15px;
+        }
+        
+        .integration-title {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .integration-desc {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .live-demo {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .demo-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .demo-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .demo-btn:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .demo-output {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            min-height: 100px;
+            text-align: right;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px var(--n8n-color); }
+            50% { box-shadow: 0 0 20px var(--n8n-color); }
+        }
+        
+        .animate-node {
+            animation: pulse 2s infinite;
+        }
+        
+        .animate-connection {
+            animation: glow 2s infinite;
+        }
+        
+        /* English Button Styles */
+        .english-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            left: auto;
+            background: var(--linkedin);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+            text-decoration: none;
+        }
+        
+        .english-btn:hover {
+            background: #005582;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .english-btn i {
+            transition: transform 0.3s;
+        }
+        
+        .english-btn:hover i {
+            transform: scale(1.1);
+        }
+        
+        /* English Button Tooltip */
+        .english-btn::after {
+            content: 'English Version';
+            position: absolute;
+            right: 70px;
+            left: auto;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 1001;
+        }
+        
+        .english-btn:hover::after {
+            opacity: 1;
+            visibility: visible;
+            right: 75px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .slide-title {
+                font-size: 1.8rem;
+            }
+            
+            .slide-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .challenge-solution {
+                flex-direction: column;
+            }
+            
+            .challenge {
+                border-left: none;
+                border-bottom: 1px solid #ffcdd2;
+            }
+            
+            .controls {
+                left: 20px;
+                bottom: 20px;
+            }
+            
+            .nav-dots {
+                bottom: 30px;
+            }
+            
+            .tools-showcase {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 15px;
+            }
+            
+            .workflow-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .n8n-node {
+                min-width: 140px;
+                padding: 15px;
+            }
+            
+            .node-icon {
+                font-size: 2rem;
+                height: 50px;
+                width: 50px;
+            }
+            
+            .english-btn {
+                right: 20px;
+                bottom: 20px;
+            }
+            
+            .english-btn::after {
+                display: none;
+            }
+        }
+        
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        #slide-progress {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: auto;
+            height: 5px;
+            background: var(--n8n-color);
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- English Button -->
+    <a href="e-inedx.html" class="english-btn">
+        En
+    </a>
+    
+    <!-- Navigation Controls -->
+    <div class="controls">
+        <button class="btn" id="prevBtn">
+            <i class="fas fa-arrow-right"></i>
+        </button>
+        <button class="btn" id="nextBtn">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+    </div>
+    
+    <!-- Navigation Dots -->
+    <div class="nav-dots" id="navDots"></div>
+    
+    <!-- Progress Indicator -->
+    <div id="slide-progress"></div>
+    
+    <!-- Logo -->
+    <div class="logo">
+        <i class="fas fa-robot"></i> أبحاث أتمتة n8n
+    </div>
+    
+    <!-- Slide 1: Title -->
+    <div class="container active" id="slide1">
+        <div class="researcher-info">
+            <div class="researcher-name">يوسف التيجاني محمد عمر</div>
+            <div class="research-purpose">خطة بحث لدرجة الماجستير</div>
+            <div class="degree-badge">رسالة ماجستير</div>
+        </div>
+        
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">تطوير نظام ذكي لأتمتة معالجة المهام اليومية</h1>
+                <p class="slide-subtitle">باستخدام منصة n8n: دراسة تطبيقية</p>
+            </div>
+            <div class="slide-number">1</div>
+        </div>
+        
+        <div class="content">
+            <div style="text-align: center; margin: 40px 0;">
+                <div style="font-size: 4rem; color: var(--secondary); margin-bottom: 20px;">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <h2>عرض بحثي</h2>
+                <p style="font-size: 1.3rem; margin-top: 15px; color: #555;">
+                    تعزيز الإنتاجية من خلال أتمتة سير العمل
+                </p>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">30-50%</div>
+                    <div class="stat-label">تحسين الإنتاجية</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">60-80%</div>
+                    <div class="stat-label">تقليل الأخطاء</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">15-25</div>
+                    <div class="stat-label">ساعات أسبوعية محفوظة</div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <p style="font-style: italic; color: var(--primary); font-size: 1.2rem;">
+                    "الأتمتة ليست لاستبدال البشر، ولكن لتعزيز قدراتهم"
+                </p>
+            </div>
+            
+            <div class="highlight" style="margin-top: 50px;">
+                <p style="text-align: center; font-weight: 600; color: var(--primary); font-size: 1.1rem;">
+                    عرض بحثي لدرجة الماجستير في علوم الحاسوب / نظم المعلومات<br>
+                    تحت إشراف قسم الدراسات العليا
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 2: Research Problem and Significance -->
+    <div class="container" id="slide2">
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">مشكلة البحث وأهميته</h1>
+                <p class="slide-subtitle">معالجة تحديات الإنتاجية</p>
+            </div>
+            <div class="slide-number">2</div>
+        </div>
+        
+        <div class="content">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    مشكلة البحث
+                </div>
+                <p>تواجه المؤسسات والأفراد تحديات في إدارة المهام اليومية المتكررة التي تستهلك وقتاً وجهداً كبيراً، مما يؤثر سلباً على الإنتاجية والكفاءة.</p>
+                <ul>
+                    <li>العمليات اليدوية المستهلكة للوقت</li>
+                    <li>زيادة الأخطاء البشرية في المهام المتكررة</li>
+                    <li>ارتفاع التكاليف التشغيلية</li>
+                    <li>محدودية قابلية التوسع للعمليات اليدوية</li>
+                    <li>إرهاق الموظفين من العمل الرتيب</li>
+                </ul>
+            </div>
+            
+            <h2>أهمية البحث</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-chart-line"></i> تعزيز الكفاءة</div>
+                    <p>تقلل أتمتة سير العمل من التدخل اليدوي وتبسط العمليات، مما يسمح بالتركيز على المهام ذات القيمة العالية.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-dollar-sign"></i> خفض التكاليف</div>
+                    <p>يقلل النفقات المرتبطة بالمهام اليدوية المتكررة وتصحيح الأخطاء، مما يحسن العائد على الاستثمار.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-code-branch"></i> حلول مفتوحة المصدر</div>
+                    <p>يوفر أتمتة قابلة للتخصيص دون تكلفة باستخدام منصة n8n، مما يلغي الاعتماد على الموردين.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-link"></i> تكامل الأنظمة</div>
+                    <p>يعزز الروابط بين التطبيقات والمنصات المختلفة، مما يخلق سير عمل موحد.</p>
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <p style="text-align: center; font-weight: 600; color: var(--primary);">
+                    يساهم هذا البحث في مجال أتمتة سير العمل من خلال تقديم<br>
+                    إطار عمل تطبيقي باستخدام تقنية مفتوحة المصدر للتطبيقات الأكاديمية والصناعية
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 3: Research Objectives -->
+    <div class="container" id="slide3">
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">أهداف البحث</h1>
+                <p class="slide-subtitle">أهداف الدراسة التطبيقية</p>
+            </div>
+            <div class="slide-number">3</div>
+        </div>
+        
+        <div class="content">
+            <div class="highlight" style="background: linear-gradient(135deg, var(--n8n-color), #00a8a8); color: white;">
+                <p style="font-style: italic; text-align: center; font-size: 1.2rem;">
+                    "تطوير وتقييم إطار عمل تطبيقي لأتمتة المهام اليومية باستخدام n8n،<br>
+                    للمساهمة في المعرفة الأكاديمية والتطبيق العملي"
+                </p>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">1. تحليل المنصة</div>
+                    <p>دراسة قدرات منصة n8n في أتمتة المهام اليومية عبر المجالات والصناعات المختلفة.</p>
+                    <div style="margin-top: 10px;">
+                        <span class="tag">تقييم تقني</span>
+                        <span class="tag">تحليل الميزات</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">2. التطبيق العملي</div>
+                    <p>تصميم وتنفيذ سيناريوهات أتمتة عملية للتطبيقات الواقعية بنتائج قابلة للقياس.</p>
+                    <div style="margin-top: 10px;">
+                        <span class="tag">تصميم سير العمل</span>
+                        <span class="tag">تطوير السيناريوهات</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">3. قياس الأثر</div>
+                    <p>قياس تأثير الأتمتة على الإنتاجية والكفاءة ومعدلات الأخطاء والتكاليف التشغيلية.</p>
+                    <div style="margin-top: 10px;">
+                        <span class="tag">تحليل مؤشرات الأداء</span>
+                        <span class="tag">مقاييس الأداء</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">4. تطوير الإطار</div>
+                    <p>إنشاء أطر عمل قابلة لإعادة الاستخدام للبيئات والقطاعات التنظيمية المختلفة.</p>
+                    <div style="margin-top: 10px;">
+                        <span class="tag">إنشاء القوالب</span>
+                        <span class="tag">أفضل الممارسات</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-title">5. المساهمة الأكاديمية</div>
+                    <p>تقديم دراسات حالة موثقة ومنهجيات كمرجع أكاديمي وبحث مستقبلي.</p>
+                    <div style="margin-top: 10px;">
+                        <span class="tag">دراسة حالة</span>
+                        <span class="tag">توثيق البحث</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top: 30px;">
+                <div class="card-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    الأهمية الأكاديمية
+                </div>
+                <p>يسد هذا البحث الفجوة بين مفاهيم الأتمتة النظرية والتطبيق العملي، ويقدم بيانات تجريبية ومنهجيات تساهم في الهيئة الأكاديمية للمعرفة في أتمتة سير العمل وتحسين عمليات الأعمال.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 4: Theoretical Framework -->
+    <div class="container" id="slide4">
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">الإطار النظري</h1>
+                <p class="slide-subtitle">المفاهيم الأساسية والدراسات السابقة</p>
+            </div>
+            <div class="slide-number">4</div>
+        </div>
+        
+        <div class="content">
+            <h2>المفاهيم الأساسية</h2>
+            
+            <h3>أتمتة سير العمل</h3>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">أتمتة كاملة</div>
+                    <p>نقل كامل للمهام إلى أنظمة مؤتمتة دون تدخل بشري، مناسب للعمليات القائمة على القواعد.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">أتمتة جزئية</div>
+                    <p>تعاون بين البشر والآلات حيث يتم أتمتة خطوات محددة، مع الحفاظ على الإشراف البشري عند الحاجة.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">أتمتة ذكية</div>
+                    <p>تكامل الذكاء الاصطناعي والتعلم الآلي لاتخاذ القرارات داخل سير العمل المؤتمت، مما يتيح استجابات تكيفية.</p>
+                </div>
+            </div>
+            
+            <h3>منصة n8n</h3>
+            <p><strong>نظرة عامة:</strong> n8n هي أداة أتمتة سير عمل مفتوحة المصدر تعتمد على العقد، تتيح إنشاء مرئي لسيناريوهات الأتمتة المعقدة بقدرات تكامل واسعة.</p>
+            
+            <div class="highlight">
+                <h3 style="margin-top: 0;">مقارنة مع المنصات الأخرى</h3>
+                <table>
+                    <tr>
+                        <th>المنصة</th>
+                        <th>النوع</th>
+                        <th>الميزة الرئيسية</th>
+                        <th>نموذج التكلفة</th>
+                    </tr>
+                    <tr>
+                        <td><strong>n8n</strong></td>
+                        <td>مفتوحة المصدر</td>
+                        <td>مستضافة ذاتياً، سير عمل غير محدود</td>
+                        <td>مجاني / مؤسسي</td>
+                    </tr>
+                    <tr>
+                        <td>Zapier</td>
+                        <td>خدمة سحابية</td>
+                        <td>سهولة الاستخدام، مكتبة تطبيقات كبيرة</td>
+                        <td>اشتراك متدرج</td>
+                    </tr>
+                    <tr>
+                        <td>Make (Integromat)</td>
+                        <td>خدمة سحابية</td>
+                        <td>سيناريوهات مرئية، تحويل البيانات</td>
+                        <td>اشتراك متدرج</td>
+                    </tr>
+                    <tr>
+                        <td>Power Automate</td>
+                        <td>خدمة سحابية/محلية</td>
+                        <td>تكامل Microsoft، قدرات RPA</td>
+                        <td>اشتراك</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="card" style="margin-top: 30px;">
+                <div class="card-title">
+                    <i class="fas fa-book-open"></i>
+                    الأساس الأكاديمي
+                </div>
+                <p>يستند هذا البحث إلى نظريات راسخة في إدارة عمليات الأعمال، واقتصاديات الأتمتة، والتفاعل بين الإنسان والحاسوب، ويطبقها على منصات الأتمتة مفتوحة المصدر الحديثة.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 5: Research Methodology -->
+    <div class="container" id="slide5">
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">منهجية البحث</h1>
+                <p class="slide-subtitle">دراسة تطبيقية بأساليب مختلطة</p>
+            </div>
+            <div class="slide-number">5</div>
+        </div>
+        
+        <div class="content">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">نوع البحث</div>
+                    <p>دراسة تطبيقية بأساليب مختلطة تجمع بين النهج النوعي والكمي:</p>
+                    <ul>
+                        <li>بحث وصفي تحليلي</li>
+                        <li>منهجية دراسة الحالة</li>
+                        <li>التجريب العملي</li>
+                        <li>عناصر بحث الإجراءات</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">مجتمع البحث والعينة</div>
+                    <p>المجموعات المستهدفة لتنفيذ البحث:</p>
+                    <ul>
+                        <li>المؤسسات الصغيرة والمتوسطة</li>
+                        <li>الفرق الفنية والإدارية</li>
+                        <li>مستخدمو أدوات الإنتاجية الفردية</li>
+                        <li>المؤسسات التعليمية</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h2>أدوات جمع البيانات</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-clipboard-list"></i> الاستبيانات</div>
+                    <p>لقياس مستويات الرضا والإنتاجية قبل وبعد التنفيذ باستخدام مقاييس معتمدة.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-comments"></i> المقابلات</div>
+                    <p>مع المستخدمين والمديرين لجمع تعليقات ورؤى نوعية حول تأثير الأتمتة.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-chart-bar"></i> القياسات الفنية</div>
+                    <p>وقت التنفيذ، معدل الخطأ، عدد المهام المكتملة آلياً مع تتبع دقيق.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-file-alt"></i> تحليل الوثائق</div>
+                    <p>سجلات النظام ولوحات التحكم لتتبع الأداء وتحديد الأنماط.</p>
+                </div>
+            </div>
+            
+            <div class="highlight">
+                <h3 style="margin-top: 0;">صلاحية وموثوقية البحث</h3>
+                <p>لضمان الدقة الأكاديمية، يستخدم البحث تثليث مصادر البيانات، والاختبار التجريبي للأدوات، والتحقق الإحصائي للنتائج باستخدام أدوات البرمجيات المناسبة.</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 6: Implementation Steps -->
+    <div class="container" id="slide6">
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">خطوات التنفيذ</h1>
+                <p class="slide-subtitle">منهجية بحث من خمس مراحل</p>
+            </div>
+            <div class="slide-number">6</div>
+        </div>
+        
+        <div class="content">
+            <div class="timeline-bar">
+                <div class="timeline-phase" style="background: var(--primary); width: 15%; right: 0;">
+                    <div class="phase-label" style="right: 5%;">المرحلة 1<br>التحليل</div>
+                </div>
+                <div class="timeline-phase" style="background: var(--secondary); width: 15%; right: 16%;">
+                    <div class="phase-label" style="right: 21%;">المرحلة 2<br>التصميم</div>
+                </div>
+                <div class="timeline-phase" style="background: var(--accent); width: 30%; right: 32%;">
+                    <div class="phase-label" style="right: 42%;">المرحلة 3<br>التطوير</div>
+                </div>
+                <div class="timeline-phase" style="background: var(--n8n-color); width: 20%; right: 63%;">
+                    <div class="phase-label" style="right: 68%;">المرحلة 4<br>التقييم</div>
+                </div>
+                <div class="timeline-phase" style="background: var(--warning); width: 15%; right: 84%;">
+                    <div class="phase-label" style="right: 89%;">المرحلة 5<br>التوثيق</div>
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">المرحلة 1: التحليل والتخطيط</div>
+                    <ul>
+                        <li>تحديد المهام اليومية المناسبة للأتمتة</li>
+                        <li>تحليل احتياجات ومتطلبات المستخدمين</li>
+                        <li>رسم خرائط لسير العمل والعمليات الحالية</li>
+                        <li>تحديد متطلبات النظام والقيود</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">المرحلة 2: التصميم والإعداد</div>
+                    <ul>
+                        <li>تثبيت وتهيئة بيئة n8n</li>
+                        <li>تصميم منطق سير العمل والأتمتة الأساسي</li>
+                        <li>تكوين التكاملات والاتصالات المطلوبة</li>
+                        <li>إنشاء هيكل قاعدة البيانات والمتغيرات</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">المرحلة 3: التطوير والتنفيذ</div>
+                    <ul>
+                        <li>بناء سيناريوهات الأتمتة العملية</li>
+                        <li>اختبار الوحدات والمكونات المختلفة</li>
+                        <li>معالجة الأخطاء والاستثناءات</li>
+                        <li>تحسين الأداء والموثوقية</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">المرحلة 4: الاختبار والتقييم</div>
+                    <ul>
+                        <li>تنفيذ تجريبي محدود</li>
+                        <li>جمع البيانات وملاحظات المستخدمين</li>
+                        <li>تحليل النتائج مقابل مؤشرات الأداء</li>
+                        <li>تطبيق التعديلات والتحسينات اللازمة</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">المرحلة 5: التوثيق والتوصيات</div>
+                    <ul>
+                        <li>كتابة تقارير البحث النهائية</li>
+                        <li>إعداد دليل مستخدم شامل</li>
+                        <li>توثيق أفضل الممارسات والدروس المستفادة</li>
+                        <li>تقديم توصيات التنفيذ</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 7: Practical Automation Scenarios -->
+    <div class="container" id="slide7">
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">سيناريوهات الأتمتة العملية</h1>
+                <p class="slide-subtitle">أمثلة للتطبيق الواقعي</p>
+            </div>
+            <div class="slide-number">7</div>
+        </div>
+        
+        <div class="content">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-envelope"></i> أتمتة إدارة البريد الإلكتروني</div>
+                    <ul>
+                        <li>تصفية وتصنيف البريد الإلكتروني التلقائي</li>
+                        <li>الرد التلقائي على الاستفسارات المحددة</li>
+                        <li>أرشفة المرفقات إلى التخزين السحابي</li>
+                        <li>إرسال تنبيهات للرسائل المهمة</li>
+                    </ul>
+                    <div style="margin-top: 10px;">
+                        <span class="tag">Gmail</span>
+                        <span class="tag">Outlook</span>
+                        <span class="tag">Google Drive</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-project-diagram"></i> أتمتة إدارة المشاريع</div>
+                    <ul>
+                        <li>إنشاء مهام جديدة من النماذج أو البريد الإلكتروني</li>
+                        <li>تحديث حالات المهام تلقائياً</li>
+                        <li>إرسال تقارير التقدم الدورية</li>
+                        <li>إشعار الفريق بالمواعيد النهائية</li>
+                    </ul>
+                    <div style="margin-top: 10px;">
+                        <span class="tag">Trello</span>
+                        <span class="tag">Asana</span>
+                        <span class="tag">Jira</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-bullhorn"></i> أتمتة المحتوى والتسويق</div>
+                    <ul>
+                        <li>جدولة ونشر المحتوى عبر المنصات</li>
+                        <li>جمع وتحليل بيانات وسائل التواصل الاجتماعي</li>
+                        <li>إرسال رسائل تسويقية مخصصة</li>
+                        <li>إنشاء تقارير أداء تلقائية</li>
+                    </ul>
+                    <div style="margin-top: 10px;">
+                        <span class="tag">Twitter</span>
+                        <span class="tag">Facebook</span>
+                        <span class="tag">LinkedIn</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-chart-pie"></i> أتمتة العمليات المالية</div>
+                    <ul>
+                        <li>تتبع النفقات والفواتير</li>
+                        <li>إنشاء تقارير مالية دورية</li>
+                        <li>إرسال تذكير بمواعيد الدفع</li>
+                        <li>مزامنة البيانات مع أنظمة المحاسبة</li>
+                    </ul>
+                    <div style="margin-top: 10px;">
+                        <span class="tag">QuickBooks</span>
+                        <span class="tag">Excel</span>
+                        <span class="tag">Google Sheets</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-users"></i> أتمتة عمليات الموارد البشرية</div>
+                    <ul>
+                        <li>معالجة طلبات الإجازة</li>
+                        <li>إرسال استبيانات رضا الموظفين</li>
+                        <li>تنظيم سير عمل التوظيف</li>
+                        <li>إدارة تقييمات الأداء</li>
+                    </ul>
+                    <div style="margin-top: 10px;">
+                        <span class="tag">النماذج</span>
+                        <span class="tag">Slack</span>
+                        <span class="tag">التقويم</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-graduation-cap"></i> أتمتة العمليات التعليمية</div>
+                    <ul>
+                        <li>تصحيح الاختبارات تلقائياً</li>
+                        <li>توزيع المواد التعليمية</li>
+                        <li>تتبع حضور الطلاب</li>
+                        <li>إنشاء شهادات التخرج</li>
+                    </ul>
+                    <div style="margin-top: 10px;">
+                        <span class="tag">Moodle</span>
+                        <span class="tag">Google Classroom</span>
+                        <span class="tag">إنشاء PDF</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 8: Evaluation and Measurement -->
+    <div class="container" id="slide8">
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">التقييم والقياس</h1>
+                <p class="slide-subtitle">المؤشرات الكمية والنوعية</p>
+            </div>
+            <div class="slide-number">8</div>
+        </div>
+        
+        <div class="content">
+            <h2>مؤشرات الأداء الكمية (KPIs)</h2>
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; margin: 20px 0;">
+                <div class="kpi"><i class="fas fa-clock"></i> تقليل وقت إكمال المهمة</div>
+                <div class="kpi"><i class="fas fa-exclamation-triangle"></i> معدل الخطأ قبل/بعد</div>
+                <div class="kpi"><i class="fas fa-tasks"></i> المهام المعالجة في الساعة</div>
+                <div class="kpi"><i class="fas fa-money-bill-wave"></i> توفير التكاليف التشغيلية</div>
+                <div class="kpi"><i class="fas fa-tachometer-alt"></i> وقت استجابة النظام</div>
+                <div class="kpi"><i class="fas fa-user-check"></i> رضا المستخدم</div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">65%</div>
+                    <div class="stat-label">توفير الوقت</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">82%</div>
+                    <div class="stat-label">تقليل الأخطاء</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">45%</div>
+                    <div class="stat-label">خفض التكاليف</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">92%</div>
+                    <div class="stat-label">رضا المستخدم</div>
+                </div>
+            </div>
+            
+            <h2>المؤشرات النوعية</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">رضا المستخدم</div>
+                    <p>قياس سهولة الاستخدام، منحنى التعلم، والرضا العام مع النظام المؤتمت.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">المرونة والقابلية للتوسع</div>
+                    <p>تقييم مدى سهولة تكيف النظام مع المتطلبات الجديدة وتوسعها مع النمو.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">الموثوقية والأمان</div>
+                    <p>تقييم حماية البيانات، استقرار النظام، والامتثال التنظيمي.</p>
+                </div>
+            </div>
+            
+            <h2>أدوات القياس</h2>
+            <table>
+                <tr>
+                    <th>الأداة</th>
+                    <th>الغرض</th>
+                    <th>المقاييس</th>
+                </tr>
+                <tr>
+                    <td><strong>Google Analytics</strong></td>
+                    <td>تتبع تفاعلات المستخدم</td>
+                    <td>أنماط الاستخدام، مدة الجلسة</td>
+                </tr>
+                <tr>
+                    <td><strong>لوحات تحكم n8n</strong></td>
+                    <td>مراقبة النظام</td>
+                    <td>تنفيذ سير العمل، معدلات النجاح</td>
+                </tr>
+                <tr>
+                    <td><strong>استبيان SUS</strong></td>
+                    <td>تقييم سهولة الاستخدام</td>
+                    <td>درجة قابلية استخدام النظام</td>
+                </tr>
+                <tr>
+                    <td><strong>تحليل السجلات</strong></td>
+                    <td>تتبع الأداء</td>
+                    <td>تكرار الخطأ، وقت التنفيذ</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Slide 9: Expected Challenges and Solutions -->
+    <div class="container" id="slide9">
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">التحديات والحلول المتوقعة</h1>
+                <p class="slide-subtitle">توقع عقبات التنفيذ</p>
+            </div>
+            <div class="slide-number">9</div>
+        </div>
+        
+        <div class="content">
+            <h2>التحديات التقنية</h2>
+            
+            <div class="challenge-solution">
+                <div class="challenge">
+                    <h3><i class="fas fa-exclamation-circle"></i> التحدي</h3>
+                    <p><strong>التكامل المعقد مع الأنظمة القديمة</strong><br>
+                    قد تفتقر الأنظمة القديمة إلى واجهات برمجة التطبيقات الحديثة أو التوثيق.</p>
+                </div>
+                <div class="solution">
+                    <h3><i class="fas fa-lightbulb"></i> الحل</h3>
+                    <p><strong>استخدام حلول الوسيط أو واجهات برمجة التطبيقات المخصصة</strong><br>
+                    تطوير موصلات أو استخدام منصات وسيطة لسد فجوات التوافق.</p>
+                </div>
+            </div>
+            
+            <div class="challenge-solution">
+                <div class="challenge">
+                    <h3><i class="fas fa-exclamation-circle"></i> التحدي</h3>
+                    <p><strong>حدود معدل واجهات برمجة التطبيات والحصص</strong><br>
+                    قد تقيد الخدمات الخارجية تكرار مكالمات واجهة برمجة التطبيقات.</p>
+                </div>
+                <div class="solution">
+                    <h3><i class="fas fa-lightbulb"></i> الحل</h3>
+                    <p><strong>تنفيذ آليات تأخير وإعادة محاولة ذكية</strong><br>
+                    إضافة قوائم انتظار ذكية واستراتيجيات التراجع الأسي.</p>
+                </div>
+            </div>
+            
+            <h2 style="margin-top: 40px;">التحديات التنظيمية</h2>
+            
+            <div class="challenge-solution">
+                <div class="challenge">
+                    <h3><i class="fas fa-exclamation-circle"></i> التحدي</h3>
+                    <p><strong>مقاومة المستخدمين للتغيير</strong><br>
+                    قد يتردد الموظفون في تبني العمليات المؤتمتة الجديدة.</p>
+                </div>
+                <div class="solution">
+                    <h3><i class="fas fa-lightbulb"></i> الحل</h3>
+                    <p><strong>برامج تدريب مكثفة وتوعية</strong><br>
+                    إظهار الفوائد مبكراً وإشراك المستخدمين في عملية التصميم.</p>
+                </div>
+            </div>
+            
+            <h2 style="margin-top: 40px;">التحديات الأمنية</h2>
+            
+            <div class="challenge-solution">
+                <div class="challenge">
+                    <h3><i class="fas fa-exclamation-circle"></i> التحدي</h3>
+                    <p><strong>حماية بيانات الاعتماد والبيانات الحساسة</strong><br>
+                    تتطلب سير العمل المؤتمتة غالباً الوصول إلى أنظمة حرجة.</p>
+                </div>
+                <div class="solution">
+                    <h3><i class="fas fa-lightbulb"></i> الحل</h3>
+                    <p><strong>استخدام التشفير وإدارة الأسرار الآمنة</strong><br>
+                    تنفيذ التحكم في الوصول القائم على الأداء وتدوير بيانات الاعتماد بانتظام.</p>
+                </div>
+            </div>
+            
+            <div class="stats" style="margin-top: 40px;">
+                <div class="stat">
+                    <div class="stat-value">70%</div>
+                    <div class="stat-label">تحديات تقنية</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">20%</div>
+                    <div class="stat-label">تحديات تنظيمية</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">10%</div>
+                    <div class="stat-label">تحديات أمنية</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">95%</div>
+                    <div class="stat-label">قابلة للحل</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 10: Timeline and Budget -->
+    <div class="container" id="slide10">
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">الجدول الزمني والميزانية</h1>
+                <p class="slide-subtitle">تخطيط المشروع وتخصيص الموارد</p>
+            </div>
+            <div class="slide-number">10</div>
+        </div>
+        
+        <div class="content">
+            <h2>الجدول الزمني المتوقع: 5 أشهر (19-20 أسبوعاً)</h2>
+            <table>
+                <tr>
+                    <th>المرحلة</th>
+                    <th>المدة</th>
+                    <th>الأنشطة الرئيسية</th>
+                </tr>
+                <tr>
+                    <td><strong>الإعداد ومراجعة الأدبيات</strong></td>
+                    <td>2-3 أسابيع</td>
+                    <td>جمع المراجع، تحليل الدراسات</td>
+                </tr>
+                <tr>
+                    <td><strong>التحليل والتخطيط</strong></td>
+                    <td>4 أسابيع</td>
+                    <td>تحديد المتطلبات، رسم سير العمل</td>
+                </tr>
+                <tr>
+                    <td><strong>التصميم والإعداد</strong></td>
+                    <td>3 أسابيع</td>
+                    <td>إعداد البيئة، التصميم الأولي</td>
+                </tr>
+                <tr>
+                    <td><strong>التطوير والتنفيذ</strong></td>
+                    <td>6 أسابيع</td>
+                    <td>بناء سير العمل، الاختبار</td>
+                </tr>
+                <tr>
+                    <td><strong>الاختبار والتقييم</strong></td>
+                    <td>4 أسابيع</td>
+                    <td>اختبار تجريبي، جمع البيانات</td>
+                </tr>
+                <tr>
+                    <td><strong>التحليل والتوثيق</strong></td>
+                    <td>2 أسابيع</td>
+                    <td>إعداد التقارير، التوصيات</td>
+                </tr>
+            </table>
+            
+            <h2 style="margin-top: 40px;">الميزانية المتوقعة</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">التكاليف التقنية</div>
+                    <ul>
+                        <li>خادم استضافة n8n: 20-50 دولار/شهر</li>
+                        <li>اشتراكات واجهات برمجة التطبيقات: 50-200 دولار/شهر</li>
+                        <li>أدوات التطوير والاختبار: 100 دولار لمرة واحدة</li>
+                        <li>النطاق وشهادة SSL: 30 دولار/سنة</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">تكاليف الموارد البشرية</div>
+                    <ul>
+                        <li>فريق التطوير والبحث</li>
+                        <li>جلسات تدريب المستخدمين</li>
+                        <li>موظفي الدعم الفني</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">تكاليف أخرى</div>
+                    <ul>
+                        <li>أدوات المراقبة والتحليل</li>
+                        <li>حلول النسخ الاحتياطي والأمن</li>
+                        <li>مواد التوثيق</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="stats" style="margin-top: 30px;">
+                <div class="stat">
+                    <div class="stat-value">$500</div>
+                    <div class="stat-label">التكاليف التقنية</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">$1000</div>
+                    <div class="stat-label">تكاليف الموارد البشرية</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">$300</div>
+                    <div class="stat-label">تكاليف أخرى</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">$1800</div>
+                    <div class="stat-label">الإجمالي</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 11: Expected Results -->
+    <div class="container" id="slide11">
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">النتائج المتوقعة</h1>
+                <p class="slide-subtitle">النتائج الملموسة والمساهمات</p>
+            </div>
+            <div class="slide-number">11</div>
+        </div>
+        
+        <div class="content">
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-code"></i> النتائج التقنية</div>
+                    <ul>
+                        <li>نظام أتمتة وظيفي يغطي المهام المستهدفة</li>
+                        <li>مكتبة قابلة لإعادة الاستخدام لسير العمل</li>
+                        <li>توثيق تقني شامل</li>
+                        <li>أدلة النشر ونصوص التكوين</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-chart-line"></i> النتائج العملية</div>
+                    <ul>
+                        <li>تحسين الإنتاجية بنسبة 30-50%</li>
+                        <li>تقليل الأخطاء البشرية بنسبة 60-80%</li>
+                        <li>توفير 15-25 ساعة عمل أسبوعية</li>
+                        <li>زيادة اتساق وموثوقية العمليات</li>
+                    </ul>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title"><i class="fas fa-graduation-cap"></i> المساهمة العلمية</div>
+                    <ul>
+                        <li>إطار مرجعي لأتمتة المهام باستخدام n8n</li>
+                        <li>دراسة حالة عملية ببيانات تجريبية</li>
+                        <li>توصيات للباحثين والممارسين</li>
+                        <li>منهجية لتقييم تأثير الأتمتة</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">45%</div>
+                    <div class="stat-label">تحسين الإنتاجية</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">75%</div>
+                    <div class="stat-label">تقليل الأخطاء</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">20</div>
+                    <div class="stat-label">ساعة محفوظة/أسبوع</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">90%</div>
+                    <div class="stat-label">رضا المستخدم</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 12: Recommendations and Future Work -->
+    <div class="container" id="slide12">
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">التوصيات والعمل المستقبلي</h1>
+                <p class="slide-subtitle">إرشادات التنفيذ واتجاهات البحث</p>
+            </div>
+            <div class="slide-number">12</div>
+        </div>
+        
+        <div class="content">
+            <h2>توصيات التنفيذ</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-title">ابدأ بسيطاً ثم توسع</div>
+                    <p>ابدأ بمهام الأتمتة البسيطة قبل التعامل مع سير العمل المعقد لبناء الثقة وإظهار النتائج السريعة.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">اشرك المستخدمين مبكراً</div>
+                    <p>إشراك المستخدمين النهائيين في مراحل التصميم لضمان تلبية النظام للاحتياجات الفعلية وتقليل مقاومة التغيير.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">بناء نظام نسخ احتياطي قوي</div>
+                    <p>تنفيذ أنظمة النسخ الاحتياطي المنتظمة لسير العمل والبيانات لمنع الخسارة وضمان استمرارية الأعمال.</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">الصيانة الدورية</div>
+                    <p>جدولة المراجعات والتحديثات الدورية للحفاظ على محاذاة نظام الأتمتة مع احتياجات الأعمال المتطورة.</p>
+                </div>
+            </div>
+            
+            <h2 style="margin-top: 40px;">مجالات البحث المستقبلية</h2>
+            <ul>
+                <li><strong>تكامل الذكاء الاصطناعي:</strong> تكامل التعلم الآلي لاتخاذ القرارات الذكية داخل سير العمل</li>
+                <li><strong>أتمتة معقدة:</strong> أتمتة عمليات اتخاذ القرار متعددة الخطوات بالمنطق الشرطي</li>
+                <li><strong>قوالب قطاعية:</strong> تطوير قوالب أتمتة جاهزة للرعاية الصحية، التعليم، التجزئة، إلخ</li>
+                <li><strong>دراسات الأثر طويلة المدى:</strong> البحث في التحول التنظيمي من خلال الأتمتة المستدامة</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Slide 13: Questions and Discussion -->
+    <div class="container" id="slide13">
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">الأسئلة والمناقشة</h1>
+                <p class="slide-subtitle">شكراً لاهتمامكم</p>
+            </div>
+            <div class="slide-number">13</div>
+        </div>
+        
+        <div class="content">
+            <div style="text-align: center; margin: 60px 0;">
+                <div style="font-size: 5rem; color: var(--secondary); margin-bottom: 20px;">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <h2>مفتوح للأسئلة</h2>
+                <p style="font-size: 1.3rem; margin: 30px 0; color: #555;">
+                    لنتناقش حول كيفية تحويل أتمتة n8n لسير عملك
+                </p>
+                
+                <div style="max-width: 600px; margin: 40px auto; background: #f8f9fa; padding: 30px; border-radius: 10px; border-right: 4px solid var(--n8n-color);">
+                    <h3 style="color: var(--n8n-color);">ملخص العرض البحثي</h3>
+                    <ul style="text-align: right; margin-top: 20px;">
+                        <li>يوفر n8n بديلاً قوياً مفتوح المصدر لأتمتة سير العمل</li>
+                        <li>يمكن للتنفيذ العملي تحقيق تحسينات إنتاجية بنسبة 30-50%</li>
+                        <li>يضمن النهج التدريجي اعتماداً ناجحاً ونتائج قابلة للقياس</li>
+                        <li>يمكن تكييف الإطار المطور مع السياقات التنظيمية المختلفة</li>
+                        <li>يساهم هذا البحث في المعرفة الأكاديمية في دراسات الأتمتة</li>
+                    </ul>
+                </div>
+                
+                <div style="margin-top: 50px;">
+                    <div class="researcher-info" style="background: transparent; color: var(--primary); padding: 20px; margin: 0 auto; max-width: 500px; box-shadow: none;">
+                        <div class="researcher-name">يوسف التيجاني محمد عمر</div>
+                        <div class="research-purpose" style="color: var(--secondary);">بحث نهائي لدرجة الماجستير</div>
+                        <p style="margin-top: 15px; font-size: 1rem;">
+                            <i class="fas fa-envelope" style="color: var(--secondary); margin-left: 10px;"></i> 
+                            البريد الإلكتروني: example@university.edu
+                        </p>
+                        <p style="font-size: 1rem;">
+                            <i class="fas fa-phone" style="color: var(--secondary); margin-left: 10px;"></i> 
+                            الهاتف: +1234567890
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 40px;">
+                    <div class="degree-badge" style="font-size: 1.2rem; padding: 10px 25px;">
+                        <i class="fas fa-award"></i> مناقشة رسالة الماجستير
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Slide 14: Proposed Systems with Interactive Simulation -->
+    <div class="container" id="slide14">
+        <div class="slide-header">
+            <div>
+                <h1 class="slide-title">محاكاة تفاعلية لأنظمة n8n المقترحة</h1>
+                <p class="slide-subtitle">تمثيل سير العمل في الوقت الفعلي بجميع أدوات n8n</p>
+            </div>
+            <div class="slide-number">14</div>
+        </div>
+        
+        <div class="content">
+            <!-- n8n Tools Showcase -->
+            <div class="highlight" style="background: linear-gradient(135deg, var(--primary), var(--dark)); color: white;">
+                <h3 style="color: white;"><i class="fas fa-toolbox"></i> مكتبة أدوات n8n الشاملة</h3>
+                <div class="tools-showcase">
+                    <!-- Complete list of n8n tools -->
+                    <div class="tool-card" style="border-color: var(--openai);">
+                        <div class="tool-icon" style="background: rgba(16, 163, 127, 0.1); color: var(--openai);">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="tool-name">OpenAI</div>
+                        <div class="tool-description">ذكاء اصطناعي متقدم</div>
+                    </div>
+                    
+                    <div class="tool-card" style="border-color: var(--ai-agent);">
+                        <div class="tool-icon" style="background: rgba(142, 68, 173, 0.1); color: var(--ai-agent);">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="tool-name">وكيل الذكاء الاصطناعي</div>
+                        <div class="tool-description">وكيل ذكي مستقل</div>
+                    </div>
+                    
+                    <div class="tool-card" style="border-color: var(--github);">
+                        <div class="tool-icon" style="background: rgba(51, 51, 51, 0.1); color: var(--github);">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="tool-name">GitHub</div>
+                        <div class="tool-description">إدارة الكود المصدري</div>
+                    </div>
+                    
+                    <div class="tool-card" style="border-color: var(--slack);">
+                        <div class="tool-icon" style="background: rgba(74, 21, 75, 0.1); color: var(--slack);">
+                            <i class="fab fa-slack"></i>
+                        </div>
+                        <div class="tool-name">Slack</div>
+                        <div class="tool-description">اتصالات الفريق</div>
+                    </div>
+                    
+                    <div class="tool-card" style="border-color: var(--notion);">
+                        <div class="tool-icon" style="background: rgba(0, 0, 0, 0.1); color: var(--notion);">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="tool-name">Notion</div>
+                        <div class="tool-description">إدارة المعرفة</div>
+                    </div>
+                    
+                    <div class="tool-card" style="border-color: var(--postgres);">
+                        <div class="tool-icon" style="background: rgba(51, 103, 145, 0.1); color: var(--postgres);">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="tool-name">PostgreSQL</div>
+                        <div class="tool-description">قاعدة بيانات علائقية</div>
+                    </div>
+                    
+                    <div class="tool-card" style="border-color: var(--mongodb);">
+                        <div class="tool-icon" style="background: rgba(71, 162, 72, 0.1); color: var(--mongodb);">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="tool-name">MongoDB</div>
+                        <div class="tool-description">قاعدة بيانات NoSQL</div>
+                    </div>
+                    
+                    <div class="tool-card" style="border-color: var(--redis);">
+                        <div class="tool-icon" style="background: rgba(216, 44, 32, 0.1); color: var(--redis);">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="tool-name">Redis</div>
+                        <div class="tool-description">ذاكرة التخزين المؤقت</div>
+                    </div>
+                    
+                    <div class="tool-card" style="border-color: var(--docker);">
+                        <div class="tool-icon" style="background: rgba(36, 150, 237, 0.1); color: var(--docker);">
+                            <i class="fab fa-docker"></i>
+                        </div>
+                        <div class="tool-name">Docker</div>
+                        <div class="tool-description">الحاويات والتوزيع</div>
+                    </div>
+                    
+                    <div class="tool-card" style="border-color: var(--secondary);">
+                        <div class="tool-icon" style="background: rgba(52, 152, 219, 0.1); color: var(--secondary);">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="tool-name">البريد الإلكتروني</div>
+                        <div class="tool-description">البريد الإلكتروني</div>
+                    </div>
+                    
+                    <div class="tool-card" style="border-color: var(--whatsapp);">
+                        <div class="tool-icon" style="background: rgba(37, 211, 102, 0.1); color: var(--whatsapp);">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <div class="tool-name">WhatsApp</div>
+                        <div class="tool-description">المراسلة الفورية</div>
+                    </div>
+                    
+                    <div class="tool-card" style="border-color: var(--twitter);">
+                        <div class="tool-icon" style="background: rgba(29, 161, 242, 0.1); color: var(--twitter);">
+                            <i class="fab fa-twitter"></i>
+                        </div>
+                        <div class="tool-name">Twitter</div>
+                        <div class="tool-description">وسائل التواصل الاجتماعي</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System 1: Smart HR System -->
+            <div class="system-overview">
+                <div class="project-header">
+                    <div class="project-title">
+                        <i class="fas fa-users-cog"></i>
+                        النظام 1: نظام الموارد البشرية الذكي المتكامل
+                    </div>
+                    <div class="project-badge">محاكاة تفاعلية حية</div>
+                </div>
+                
+                <div class="workflow-simulator">
+                    <div class="workflow-header">
+                        <div class="workflow-title">
+                            <i class="fas fa-project-diagram"></i>
+                            سير العمل: معالجة طلبات الموظفين المؤتمتة
+                        </div>
+                        <div class="workflow-status">
+                            <i class="fas fa-circle"></i>
+                            قيد التشغيل
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-canvas" id="hr-workflow">
+                        <div class="node-line">
+                            <!-- Node 1: Trigger -->
+                            <div class="n8n-node animate-node" style="border-color: var(--secondary);">
+                                <div class="node-icon" style="background: rgba(52, 152, 219, 0.2); color: var(--secondary);">
+                                    <i class="fas fa-envelope-open-text"></i>
+                                </div>
+                                <div class="node-name">استقبال الطلب</div>
+                                <div class="node-description">مشغل البريد الإلكتروني</div>
+                            </div>
+                            
+                            <div class="connection-line animate-connection"></div>
+                            
+                            <!-- Node 2: OpenAI -->
+                            <div class="n8n-node animate-node" style="border-color: var(--openai);">
+                                <div class="node-icon" style="background: rgba(16, 163, 127, 0.2); color: var(--openai);">
+                                    <i class="fas fa-language"></i>
+                                </div>
+                                <div class="node-name">تحليل النية</div>
+                                <div class="node-description">OpenAI NLP</div>
+                            </div>
+                            
+                            <div class="connection-line animate-connection"></div>
+                            
+                            <!-- Node 3: AI Agent -->
+                            <div class="n8n-node animate-node" style="border-color: var(--ai-agent);">
+                                <div class="node-icon" style="background: rgba(142, 68, 173, 0.2); color: var(--ai-agent);">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="node-name">المعالجة الذكية</div>
+                                <div class="node-description">وكيل الذكاء الاصطناعي</div>
+                            </div>
+                            
+                            <div class="connection-line animate-connection"></div>
+                            
+                            <!-- Node 4: Database -->
+                            <div class="n8n-node animate-node" style="border-color: var(--postgres);">
+                                <div class="node-icon" style="background: rgba(51, 103, 145, 0.2); color: var(--postgres);">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div class="node-name">تحديث البيانات</div>
+                                <div class="node-description">PostgreSQL</div>
+                            </div>
+                            
+                            <div class="connection-line animate-connection"></div>
+                            
+                            <!-- Node 5: Notification -->
+                            <div class="n8n-node animate-node" style="border-color: var(--slack);">
+                                <div class="node-icon" style="background: rgba(74, 21, 75, 0.2); color: var(--slack);">
+                                    <i class="fab fa-slack"></i>
+                                </div>
+                                <div class="node-name">إرسال الإشعار</div>
+                                <div class="node-description">Slack Webhook</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Data Flow Animation -->
+                        <div class="data-flow" id="hr-data-flow"></div>
+                        
+                        <div class="workflow-stats">
+                            <div class="stat-item">
+                                <div class="stat-value" id="hr-processing">98.5%</div>
+                                <div class="stat-label">دقة التحليل</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="hr-requests">350</div>
+                                <div class="stat-label">طلب/يوم</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="hr-speed">0.5ث</div>
+                                <div class="stat-label">وقت المعالجة</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="hr-reliability">100%</div>
+                                <div class="stat-label">الموثوقية</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Live Demo Controls -->
+                    <div class="live-demo">
+                        <h3 style="color: white;"><i class="fas fa-play-circle"></i> تجربة المحاكاة الحية</h3>
+                        <div class="demo-controls">
+                            <button class="demo-btn" onclick="startHRWorkflow()">
+                                <i class="fas fa-play"></i> بدء المعالجة
+                            </button>
+                            <button class="demo-btn" onclick="simulateHRRequest()">
+                                <i class="fas fa-plus"></i> طلب جديد
+                            </button>
+                            <button class="demo-btn" onclick="resetHRWorkflow()">
+                                <i class="fas fa-redo"></i> إعادة تعيين
+                            </button>
+                        </div>
+                        <div class="demo-output" id="hr-demo-output">
+                            ⏳ جاهز للبدء... اضغط "بدء المعالجة"
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System 2: Smart Educational Platform -->
+            <div class="system-overview">
+                <div class="project-header">
+                    <div class="project-title">
+                        <i class="fas fa-graduation-cap"></i>
+                        النظام 2: المنصة التعليمية الذكية المتكاملة
+                    </div>
+                    <div class="project-badge">محاكاة متعددة الأدوات</div>
+                </div>
+                
+                <div class="workflow-simulator">
+                    <div class="workflow-header">
+                        <div class="workflow-title">
+                            <i class="fas fa-laptop-code"></i>
+                            سير العمل: التصحيح المؤتمت والتعلم التكيفي
+                        </div>
+                        <div class="workflow-status">
+                            <i class="fas fa-circle"></i>
+                            نشط - 2000 طالب
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-canvas">
+                        <div class="node-line">
+                            <!-- Node 1: GitHub -->
+                            <div class="n8n-node" style="border-color: var(--github);">
+                                <div class="node-icon" style="background: rgba(51, 51, 51, 0.2); color: var(--github);">
+                                    <i class="fab fa-github"></i>
+                                </div>
+                                <div class="node-name">استقبال الواجبات</div>
+                                <div class="node-description">GitHub Webhook</div>
+                            </div>
+                            
+                            <div class="connection-line"></div>
+                            
+                            <!-- Node 2: OpenAI Codex -->
+                            <div class="n8n-node" style="border-color: var(--openai);">
+                                <div class="node-icon" style="background: rgba(16, 163, 127, 0.2); color: var(--openai);">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <div class="node-name">تحليل الكود</div>
+                                <div class="node-description">OpenAI Codex</div>
+                            </div>
+                            
+                            <div class="connection-line"></div>
+                            
+                            <!-- Node 3: MongoDB -->
+                            <div class="n8n-node" style="border-color: var(--mongodb);">
+                                <div class="node-icon" style="background: rgba(71, 162, 72, 0.2); color: var(--mongodb);">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div class="node-name">تخزين النتائج</div>
+                                <div class="node-description">MongoDB</div>
+                            </div>
+                            
+                            <div class="connection-line"></div>
+                            
+                            <!-- Node 4: AI Agent -->
+                            <div class="n8n-node" style="border-color: var(--ai-agent);">
+                                <div class="node-icon" style="background: rgba(142, 68, 173, 0.2); color: var(--ai-agent);">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                                <div class="node-name">إنشاء التغذية الراجعة</div>
+                                <div class="node-description">وكيل المعلم الذكي</div>
+                            </div>
+                            
+                            <div class="connection-line"></div>
+                            
+                            <!-- Node 5: Notion + Email -->
+                            <div class="n8n-node" style="border-color: var(--notion);">
+                                <div class="node-icon" style="background: rgba(0, 0, 0, 0.2); color: var(--notion);">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div class="node-name">إعداد تقارير النتائج</div>
+                                <div class="node-description">Notion + البريد الإلكتروني</div>
+                            </div>
+                        </div>
+                        
+                        <div class="workflow-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">95%</div>
+                                <div class="stat-label">دقة التصحيح</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">2000</div>
+                                <div class="stat-label">واجب/شهر</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">1ث</div>
+                                <div class="stat-label">وقت التصحيح</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">85%</div>
+                                <div class="stat-label">رضا الطلاب</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System 3: Smart Customer Service -->
+            <div class="system-overview">
+                <div class="project-header">
+                    <div class="project-title">
+                        <i class="fas fa-headset"></i>
+                        النظام 3: خدمة العملاء الذكية متعددة القنوات
+                    </div>
+                    <div class="project-badge">محاكاة في الوقت الفعلي</div>
+                </div>
+                
+                <div class="workflow-simulator">
+                    <div class="workflow-header">
+                        <div class="workflow-title">
+                            <i class="fas fa-comments"></i>
+                            سير العمل: الدعم المؤتمت الذكي
+                        </div>
+                        <div class="workflow-status">
+                            <i class="fas fa-circle"></i>
+                            نشط - 5000 محادثة
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-canvas">
+                        <div class="node-line">
+                            <!-- Multi-channel Triggers -->
+                            <div class="n8n-node" style="border-color: var(--whatsapp); min-width: 180px;">
+                                <div class="node-icon" style="background: rgba(37, 211, 102, 0.2); color: var(--whatsapp);">
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                <div class="node-name">WhatsApp</div>
+                                <div class="node-description">WhatsApp Business API</div>
+                            </div>
+                            
+                            <div class="n8n-node" style="border-color: var(--secondary); min-width: 180px;">
+                                <div class="node-icon" style="background: rgba(52, 152, 219, 0.2); color: var(--secondary);">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="node-name">البريد الإلكتروني</div>
+                                <div class="node-description">Email SMTP</div>
+                            </div>
+                            
+                            <div class="n8n-node" style="border-color: var(--twitter); min-width: 180px;">
+                                <div class="node-icon" style="background: rgba(29, 161, 242, 0.2); color: var(--twitter);">
+                                    <i class="fab fa-twitter"></i>
+                                </div>
+                                <div class="node-name">Twitter</div>
+                                <div class="node-description">Twitter API</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Processing Line -->
+                        <div class="node-line" style="margin-top: 40px;">
+                            <div class="connection-line" style="max-width: 100px;"></div>
+                            
+                            <div class="n8n-node" style="border-color: var(--openai);">
+                                <div class="node-icon" style="background: rgba(16, 163, 127, 0.2); color: var(--openai);">
+                                    <i class="fas fa-language"></i>
+                                </div>
+                                <div class="node-name">تحليل النص</div>
+                                <div class="node-description">معالجة اللغة الطبيعية</div>
+                            </div>
+                            
+                            <div class="connection-line"></div>
+                            
+                            <div class="n8n-node" style="border-color: var(--redis);">
+                                <div class="node-icon" style="background: rgba(216, 44, 32, 0.2); color: var(--redis);">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div class="node-name">الذاكرة السياقية</div>
+                                <div class="node-description">ذاكرة تخزين Redis</div>
+                            </div>
+                            
+                            <div class="connection-line"></div>
+                            
+                            <div class="n8n-node" style="border-color: var(--ai-agent);">
+                                <div class="node-icon" style="background: rgba(142, 68, 173, 0.2); color: var(--ai-agent);">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="node-name">إنشاء الرد</div>
+                                <div class="node-description">وكيل الرد الذكي</div>
+                            </div>
+                        </div>
+                        
+                        <div class="workflow-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">92%</div>
+                                <div class="stat-label">دقة الفهم</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">0.3ث</div>
+                                <div class="stat-label">وقت الاستجابة</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">70%</div>
+                                <div class="stat-label">الحل الآلي الكامل</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">88%</div>
+                                <div class="stat-label">رضا العملاء</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Live Chat Simulation -->
+                    <div class="live-demo">
+                        <h3 style="color: white;"><i class="fas fa-comment-dots"></i> محاكاة الدردشة الحية</h3>
+                        <div class="demo-controls">
+                            <button class="demo-btn" onclick="startCustomerService()">
+                                <i class="fas fa-comments"></i> بدء المحادثة
+                            </button>
+                            <button class="demo-btn" onclick="sendCustomerMessage()">
+                                <i class="fas fa-paper-plane"></i> إرسال استفسار
+                            </button>
+                            <button class="demo-btn" onclick="escalateToHuman()">
+                                <i class="fas fa-user-headset"></i> تصعيد للإنسان
+                            </button>
+                        </div>
+                        <div class="demo-output" id="chat-demo-output">
+                            🤖 مرحباً! أنا مساعد خدمة العملاء الذكي. كيف يمكنني مساعدتك؟
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System 4: Smart Marketing -->
+            <div class="system-overview">
+                <div class="project-header">
+                    <div class="project-title">
+                        <i class="fas fa-bullhorn"></i>
+                        النظام 4: محرك التسويق الذكي المؤتمت
+                    </div>
+                    <div class="project-badge">محاكاة تحليل البيانات</div>
+                </div>
+                
+                <div class="workflow-simulator">
+                    <div class="workflow-header">
+                        <div class="workflow-title">
+                            <i class="fas fa-chart-network"></i>
+                            سير العمل: تحليل البيانات والتسويق الذكي
+                        </div>
+                        <div class="workflow-status">
+                            <i class="fas fa-circle"></i>
+                            نشط - تحليل مستمر
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-canvas">
+                        <div class="node-line">
+                            <!-- Data Sources -->
+                            <div class="n8n-node" style="border-color: var(--mongodb);">
+                                <div class="node-icon" style="background: rgba(71, 162, 72, 0.2); color: var(--mongodb);">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div class="node-name">بيانات العملاء</div>
+                                <div class="node-description">MongoDB Atlas</div>
+                            </div>
+                            
+                            <div class="n8n-node" style="border-color: #4CAF50;">
+                                <div class="node-icon" style="background: rgba(76, 175, 80, 0.2); color: #4CAF50;">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="node-name">تحليلات الموقع</div>
+                                <div class="node-description">Google Analytics</div>
+                            </div>
+                            
+                            <div class="n8n-node" style="border-color: var(--twitter);">
+                                <div class="node-icon" style="background: rgba(29, 161, 242, 0.2); color: var(--twitter);">
+                                    <i class="fab fa-twitter"></i>
+                                </div>
+                                <div class="node-name">وسائل التواصل الاجتماعي</div>
+                                <div class="node-description">Social Media APIs</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Processing Pipeline -->
+                        <div class="node-line" style="margin-top: 40px;">
+                            <div class="connection-line" style="max-width: 80px;"></div>
+                            
+                            <div class="n8n-node" style="border-color: var(--redis);">
+                                <div class="node-icon" style="background: rgba(216, 44, 32, 0.2); color: var(--redis);">
+                                    <i class="fas fa-bolt"></i>
+                                </div>
+                                <div class="node-name">معالجة سريعة</div>
+                                <div class="node-description">Redis Streams</div>
+                            </div>
+                            
+                            <div class="connection-line"></div>
+                            
+                            <div class="n8n-node" style="border-color: var(--openai); min-width: 200px;">
+                                <div class="node-icon" style="background: rgba(16, 163, 127, 0.2); color: var(--openai);">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div class="node-name">تحليل متقدم</div>
+                                <div class="node-description">نماذج التعلم الآلي</div>
+                            </div>
+                            
+                            <div class="connection-line"></div>
+                            
+                            <div class="n8n-node" style="border-color: var(--ai-agent);">
+                                <div class="node-icon" style="background: rgba(142, 68, 173, 0.2); color: var(--ai-agent);">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="node-name">توصيات ذكية</div>
+                                <div class="node-description">وكيل التسويق الذكي</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Output Actions -->
+                        <div class="node-line" style="margin-top: 40px;">
+                            <div class="connection-line" style="max-width: 80px;"></div>
+                            
+                            <div class="n8n-node" style="border-color: var(--slack);">
+                                <div class="node-icon" style="background: rgba(74, 21, 75, 0.2); color: var(--slack);">
+                                    <i class="fab fa-slack"></i>
+                                </div>
+                                <div class="node-name">تقارير الفريق</div>
+                                <div class="node-description">إشعارات Slack</div>
+                            </div>
+                            
+                            <div class="n8n-node" style="border-color: var(--secondary);">
+                                <div class="node-icon" style="background: rgba(52, 152, 219, 0.2); color: var(--secondary);">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="node-name">رسائل مخصصة</div>
+                                <div class="node-description">حملات البريد الإلكتروني</div>
+                            </div>
+                            
+                            <div class="n8n-node" style="border-color: var(--twitter);">
+                                <div class="node-icon" style="background: rgba(29, 161, 242, 0.2); color: var(--twitter);">
+                                    <i class="fab fa-twitter"></i>
+                                </div>
+                                <div class="node-name">منشورات تلقائية</div>
+                                <div class="node-description">النشر التلقائي لوسائل التواصل</div>
+                            </div>
+                        </div>
+                        
+                        <div class="workflow-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">40%</div>
+                                <div class="stat-label">زيادة التفاعل</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">1000</div>
+                                <div class="stat-label">منشور/يوم</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">95%</div>
+                                <div class="stat-label">ملاءمة المحتوى</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">30%</div>
+                                <div class="stat-label">توفير الوقت</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System 5: Smart Project Management -->
+            <div class="system-overview">
+                <div class="project-header">
+                    <div class="project-title">
+                        <i class="fas fa-project-diagram"></i>
+                        النظام 5: إدارة المشاريع الذكية مع Docker
+                    </div>
+                    <div class="project-badge">محاكاة الحاويات المتكاملة</div>
+                </div>
+                
+                <div class="workflow-simulator">
+                    <div class="workflow-header">
+                        <div class="workflow-title">
+                            <i class="fas fa-sitemap"></i>
+                            سير العمل: أتمتة DevOps وإدارة المشاريع
+                        </div>
+                        <div class="workflow-status">
+                            <i class="fas fa-circle"></i>
+                            نشط - 50 حاوية
+                        </div>
+                    </div>
+                    
+                    <div class="workflow-canvas">
+                        <div class="node-line">
+                            <!-- Docker Infrastructure -->
+                            <div class="n8n-node" style="border-color: var(--docker); min-width: 200px;">
+                                <div class="node-icon" style="background: rgba(36, 150, 237, 0.2); color: var(--docker);">
+                                    <i class="fab fa-docker"></i>
+                                </div>
+                                <div class="node-name">بنية الحاويات</div>
+                                <div class="node-description">Docker Swarm/K8s</div>
+                            </div>
+                            
+                            <div class="connection-line"></div>
+                            
+                            <div class="n8n-node" style="border-color: var(--github);">
+                                <div class="node-icon" style="background: rgba(51, 51, 51, 0.2); color: var(--github);">
+                                    <i class="fab fa-github"></i>
+                                </div>
+                                <div class="node-name">خط أنابيب CI/CD</div>
+                                <div class="node-description">GitHub Actions</div>
+                            </div>
+                            
+                            <div class="connection-line"></div>
+                            
+                            <div class="n8n-node" style="border-color: var(--postgres);">
+                                <div class="node-icon" style="background: rgba(51, 103, 145, 0.2); color: var(--postgres);">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div class="node-name">قاعدة البيانات</div>
+                                <div class="node-description">مجموعة PostgreSQL</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Monitoring & Management -->
+                        <div class="node-line" style="margin-top: 40px;">
+                            <div class="connection-line" style="max-width: 80px;"></div>
+                            
+                            <div class="n8n-node" style="border-color: var(--redis);">
+                                <div class="node-icon" style="background: rgba(216, 44, 32, 0.2); color: var(--redis);">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <div class="node-name">مراقبة الأداء</div>
+                                <div class="node-description">Redis TimeSeries</div>
+                            </div>
+                            
+                            <div class="connection-line"></div>
+                            
+                            <div class="n8n-node" style="border-color: var(--openai);">
+                                <div class="node-icon" style="background: rgba(16, 163, 127, 0.2); color: var(--openai);">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div class="node-name">تحليل الذكاء</div>
+                                <div class="node-description">كشف الشذوذ بالذكاء الاصطناعي</div>
+                            </div>
+                            
+                            <div class="connection-line"></div>
+                            
+                            <div class="n8n-node" style="border-color: var(--slack);">
+                                <div class="node-icon" style="background: rgba(74, 21, 75, 0.2); color: var(--slack);">
+                                    <i class="fab fa-slack"></i>
+                                </div>
+                                <div class="node-name">إشعارات الفريق</div>
+                                <div class="node-description">تنبيهات Slack</div>
+                            </div>
+                        </div>
+                        
+                        <div class="workflow-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">99.9%</div>
+                                <div class="stat-label">توفر النظام</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">60%</div>
+                                <div class="stat-label">تحسين الإنتاجية</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">85%</div>
+                                <div class="stat-label">تقليل التأخير</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">100</div>
+                                <div class="stat-label">مشروع/شهر</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Technology Summary and Capabilities -->
+            <div style="text-align: center; margin-top: 50px; padding: 40px; background: linear-gradient(135deg, var(--n8n-color), var(--secondary)); color: white; border-radius: 20px;">
+                <h2 style="color: white; margin-bottom: 25px;"><i class="fas fa-rocket"></i> قدرات n8n المتقدمة</h2>
+                
+                <div class="integration-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+                    <div class="integration-item" style="background: rgba(255,255,255,0.1); border-color: white;">
+                        <div class="integration-icon" style="color: white;">
+                            <i class="fas fa-puzzle-piece"></i>
+                        </div>
+                        <div class="integration-title" style="color: white;">+300 أداة متكاملة</div>
+                        <div class="integration-desc" style="color: rgba(255,255,255,0.9);">
+                            تكامل سلس مع جميع المنصات الرئيسية وتطبيقات السحابة
+                        </div>
+                    </div>
+                    
+                    <div class="integration-item" style="background: rgba(255,255,255,0.1); border-color: white;">
+                        <div class="integration-icon" style="color: white;">
+                            <i class="fas fa-infinity"></i>
+                        </div>
+                        <div class="integration-title" style="color: white;">تعقيد غير محدود</div>
+                        <div class="integration-desc" style="color: rgba(255,255,255,0.9);">
+                            بناء سير عمل معقد متعدد المراحل بمنطق شرطي متقدم
+                        </div>
+                    </div>
+                    
+                    <div class="integration-item" style="background: rgba(255,255,255,0.1); border-color: white;">
+                        <div class="integration-icon" style="color: white;">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="integration-title" style="color: white;">معالجة في الوقت الفعلي</div>
+                        <div class="integration-desc" style="color: rgba(255,255,255,0.9);">
+                            استجابة فورية للأحداث ومعالجة متوازية لآلاف العمليات
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <div class="degree-badge" style="background: gold; color: var(--primary); font-size: 1.3rem; padding: 12px 35px; display: inline-block;">
+                        <i class="fas fa-check-circle"></i> جميع الأنظمة قابلة للتنفيذ فوراً
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Slide System
+        const slides = document.querySelectorAll('.container');
+        const dotsContainer = document.getElementById('navDots');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('slide-progress');
+        
+        let currentSlide = 0;
+        
+        // Create Navigation Dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            dot.addEventListener('click', () => goToSlide(index));
+            dotsContainer.appendChild(dot);
+        });
+        
+        // Update Display
+        function updateSlide() {
+            // Hide all slides
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Show current slide
+            slides[currentSlide].classList.add('active');
+            
+            // Update navigation dots
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+            
+            // Update progress indicator
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            
+            // Disable/Enable buttons
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+        }
+        
+        // Go to specific slide
+        function goToSlide(index) {
+            if (index >= 0 && index < slides.length) {
+                currentSlide = index;
+                updateSlide();
+            }
+        }
+        
+        // Next slide
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+        
+        // Previous slide
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+        
+        // Button events
+        prevBtn.addEventListener('click', prevSlide);
+        nextBtn.addEventListener('click', nextSlide);
+        
+        // Keyboard control
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                prevSlide();
+            } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                nextSlide();
+            }
+        });
+        
+        // Scroll animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+        
+        // Apply observer to elements
+        document.querySelectorAll('.animate-on-scroll').forEach(element => {
+            observer.observe(element);
+        });
+        
+        // Simulation variables for Slide 14
+        let hrWorkflowActive = false;
+        let hrRequests = 0;
+        let chatActive = false;
+        let chatMessages = [];
+        
+        // Start HR system simulation
+        function startHRWorkflow() {
+            hrWorkflowActive = true;
+            document.getElementById('hr-demo-output').innerHTML = `
+                <span style="color: var(--accent);">▶️ بدء معالجة طلبات الموظفين...</span><br>
+                ✅ تم تفعيل مشغل البريد الإلكتروني<br>
+                🤖 وكيل الذكاء الاصطناعي جاهز لتحليل الطلبات<br>
+                💾 تم توصيل PostgreSQL وهو قيد التشغيل<br>
+                📢 تم تمكين إشعارات Slack
+            `;
+            
+            // Start animation
+            const dataFlow = document.getElementById('hr-data-flow');
+            dataFlow.style.animation = 'dataFlow 3s infinite linear';
+            
+            // Update statistics
+            updateHRStats();
+            
+            // Show success message
+            setTimeout(() => {
+                document.getElementById('hr-demo-output').innerHTML += '<br><br>✅ النظام جاهز لاستقبال الطلبات';
+            }, 2000);
+        }
+        
+        // Simulate new request
+        function simulateHRRequest() {
+            if (!hrWorkflowActive) {
+                alert('يرجى بدء النظام أولاً!');
+                return;
+            }
+            
+            hrRequests++;
+            document.getElementById('hr-requests').textContent = 350 + hrRequests;
+            
+            const requests = [
+                'طلب إجازة مرضية لمدة 3 أيام',
+                'تعديل بيانات الراتب',
+                'طلب تدريب في مجال الذكاء الاصطناعي',
+                'تقرير أداء ربع سنوي',
+                'طلب معدات مكتبية جديدة'
+            ];
+            
+            const randomRequest = requests[Math.floor(Math.random() * requests.length)];
+            
+            document.getElementById('hr-demo-output').innerHTML = `
+                📥 <strong>طلب جديد:</strong> ${randomRequest}<br>
+                🔍 <span style="color: var(--openai);">تحليل النية باستخدام OpenAI...</span><br>
+                🤖 <span style="color: var(--ai-agent);">يحدد وكيل الذكاء الاصطناعي نوع الطلب: ${getRequestType(randomRequest)}</span><br>
+                💾 <span style="color: var(--postgres);">تحديث قاعدة البيانات...</span><br>
+                📢 <span style="color: var(--slack);">تم إرسال الإشعار للإدارة المعنية</span><br>
+                ✅ <strong style="color: var(--accent);">تمت معالجة الطلب بنجاح!</strong>
+            `;
+            
+            // Update statistics
+            updateHRStats();
+        }
+        
+        // Reset system
+        function resetHRWorkflow() {
+            hrWorkflowActive = false;
+            hrRequests = 0;
+            document.getElementById('hr-data-flow').style.animation = 'none';
+            document.getElementById('hr-demo-output').innerHTML = '⏳ جاهز للبدء... اضغط "بدء المعالجة"';
+            document.getElementById('hr-requests').textContent = '350';
+        }
+        
+        // Update HR system statistics
+        function updateHRStats() {
+            const processing = 98.5 + (Math.random() * 0.5);
+            const speed = 0.5 - (hrRequests * 0.01);
+            const reliability = 100 - (hrRequests * 0.1);
+            
+            document.getElementById('hr-processing').textContent = processing.toFixed(1) + '%';
+            document.getElementById('hr-speed').textContent = Math.max(0.1, speed).toFixed(1) + 'ث';
+            document.getElementById('hr-reliability').textContent = Math.max(95, reliability).toFixed(1) + '%';
+        }
+        
+        // Determine request type
+        function getRequestType(request) {
+            if (request.includes('إجازة')) return 'طلب إجازة';
+            if (request.includes('راتب')) return 'المالية';
+            if (request.includes('تدريب')) return 'التطوير';
+            if (request.includes('أداء')) return 'التقييم';
+            return 'عام';
+        }
+        
+        // Customer service system
+        function startCustomerService() {
+            chatActive = true;
+            chatMessages = [
+                { sender: 'bot', text: 'مرحباً! أنا مساعد خدمة العملاء الذكي. كيف يمكنني مساعدتك اليوم؟' }
+            ];
+            updateChatDisplay();
+        }
+        
+        function sendCustomerMessage() {
+            if (!chatActive) {
+                alert('يرجى بدء المحادثة أولاً!');
+                return;
+            }
+            
+            const customerMessages = [
+                'أريد معرفة حالة طلبي',
+                'لدي مشكلة في المنتج الذي اشتريته',
+                'كيف يمكنني تغيير كلمة المرور؟',
+                'أحتاج فاتورة الشراء',
+                'ما هي ساعات عملكم؟'
+            ];
+            
+            const randomMessage = customerMessages[Math.floor(Math.random() * customerMessages.length)];
+            chatMessages.push({ sender: 'customer', text: randomMessage });
+            
+            // Simulate AI processing
+            setTimeout(() => {
+                const botResponses = [
+                    'أفهم استفسارك. أبحث عن معلومات طلبك...',
+                    'سأنقلك للإدارة المعنية لحل هذه المشكلة.',
+                    'يمكنك تغيير كلمة المرور من إعدادات الحساب.',
+                    'سأرسل الفاتورة إلى بريدك الإلكتروني.',
+                    'ساعات عملنا من 9 صباحاً إلى 6 مساءً.'
+                ];
+                
+                const botResponse = botResponses[customerMessages.indexOf(randomMessage)] || 'شكراً لتواصلك معنا. سأساعدك في ذلك.';
+                chatMessages.push({ sender: 'bot', text: botResponse });
+                updateChatDisplay();
+            }, 1000);
+            
+            updateChatDisplay();
+        }
+        
+        function escalateToHuman() {
+            if (!chatActive) return;
+            
+            chatMessages.push({ 
+                sender: 'system', 
+                text: '📞 تم تصعيد المحادثة لموظف خدمة العملاء. سيتواصل معك قريباً.' 
+            });
+            updateChatDisplay();
+        }
+        
+        function updateChatDisplay() {
+            const output = document.getElementById('chat-demo-output');
+            let html = '';
+            
+            chatMessages.forEach(msg => {
+                if (msg.sender === 'bot') {
+                    html += `<div style="text-align: right; margin: 10px 0; padding: 10px; background: rgba(19, 201, 202, 0.2); border-radius: 10px; border-right: 3px solid var(--n8n-color);">
+                        <strong>🤖 المساعد الذكي:</strong> ${msg.text}
+                    </div>`;
+                } else if (msg.sender === 'customer') {
+                    html += `<div style="text-align: left; margin: 10px 0; padding: 10px; background: rgba(52, 152, 219, 0.2); border-radius: 10px; border-left: 3px solid var(--secondary);">
+                        <strong>👤 العميل:</strong> ${msg.text}
+                    </div>`;
+                } else {
+                    html += `<div style="text-align: center; margin: 10px 0; padding: 10px; background: rgba(231, 76, 60, 0.2); border-radius: 10px; border: 2px dashed var(--warning);">
+                        <strong>📢 النظام:</strong> ${msg.text}
+                    </div>`;
+                }
+            });
+            
+            output.innerHTML = html;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        // Activate node effects in Slide 14
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize display
+            updateSlide();
+            
+            // Activate all nodes when reaching Slide 14
+            const observerSlide14 = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && entry.target.id === 'slide14') {
+                        // Activate nodes
+                        const nodes = entry.target.querySelectorAll('.n8n-node');
+                        nodes.forEach((node, index) => {
+                            setTimeout(() => {
+                                node.classList.add('animate-node');
+                            }, index * 200);
+                        });
+                        
+                        // Activate connection lines
+                        const connections = entry.target.querySelectorAll('.connection-line');
+                        connections.forEach((conn, index) => {
+                            setTimeout(() => {
+                                conn.classList.add('animate-connection');
+                            }, index * 200 + 100);
+                        });
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            observerSlide14.observe(document.getElementById('slide14'));
+            
+            // Activate hover effects for nodes
+            const nodes = document.querySelectorAll('.n8n-node');
+            nodes.forEach(node => {
+                node.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.08)';
+                    this.style.boxShadow = '0 15px 35px rgba(0,0,0,0.5)';
+                });
+                
+                node.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                    this.style.boxShadow = '0 5px 20px rgba(0,0,0,0.3)';
+                });
+            });
+            
+            // Welcome message in console
+            console.log('🎓 عرض خطة البحث جاهز!');
+            console.log('🧠 الموضوع: أتمتة المهام اليومية باستخدام n8n');
+            console.log('👤 الباحث: يوسف التيجاني محمد عمر');
+            console.log('🚀 14 شريحة كاملة مع محاكاة تفاعلية');
+            console.log('🎮 استخدم مفاتيح الأسهم للتنقل بين الشرائح');
+            console.log('🔗 تمت إضافة زر النسخة الإنجليزية على اليمين');
+        });
+    </script>
+</body>
+</html>
